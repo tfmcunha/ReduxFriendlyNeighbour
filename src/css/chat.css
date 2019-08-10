@@ -1,0 +1,26 @@
+.chatcontainer {
+	border: solid 3px #fff7d2;
+}
+
+.chatbox {
+	height: 300px;
+	background-color: #fffbe6; 
+
+}
+
+.message {	
+	border-radius: 5px;
+	color: white;
+}
+
+.out {
+	background-color: #7e82e2;
+}
+
+.in {
+	background-color: #ababab;
+}
+
+.user {
+	font-size: 8px;
+}
