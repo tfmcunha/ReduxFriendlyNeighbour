@@ -8,50 +8,46 @@ import Auth from '../modules/auth';
 
 function LoginForm(props){
 
-	const [ email, setEmail ] = useState("");
-	const [ password, setPassword ] = useState("");
+	const [ user, setUser ] = useState({ email: "", password: ""})
 	const [ formErrors, setFormErrors ] = useState({});
 
 	function validateForm() {
 		let formIsValid = true
+		const errors = {email: "", password:""}
 
-		if (!email) {
+		if (!user.email) {			
 			formIsValid = false;
-			setFormErrors({
-				...formErrors,
-				email: "*Please enter your email"
-			})			
+			errors['email'] = "*Please enter your email"
 		} 
 
-		if (typeof email !== "undefined") {      
+		if (typeof user.email !== "undefined") {      			
 			var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
-			if (!pattern.test(email)) {
+			if (!pattern.test(user.email)) {				
 				formIsValid = false;
-				setFormErrors({
-					...formErrors,
-					email: "*Please enter valid email."
-				})				
+				errors['email'] = "*Please enter valid email."	
 			}
 		}
 
-		if (!password) {
+		if (!user.password) {			
 			formIsValid = false;
-			setFormErrors({
-				...formErrors,
-				password: "*Please enter your password"
-			})	
+			errors['password'] = "*Please enter your password"
 		}
 
+		setFormErrors(errors)
 		return formIsValid;
 	}
 
+	function handleChange(e){
+		setUser({
+			...user,
+			[e.target.name]: e.target.value
+		})
+	}
+
 	function handleLogin(e) {
-		e.preventDefault();
-		const loginData = {}
-		loginData["email"] = email
-		loginData["password"] = password
+		e.preventDefault()
 		if ( validateForm() ) {		    
-		    props.setAuthentication(loginData)		    
+		    props.setAuthentication(user)		    
 		}	       
 	}	
 	
@@ -64,12 +60,12 @@ function LoginForm(props){
       			<Form onSubmit={handleLogin}>
       				<Form.Group>
       					<Form.Label>E-mail</Form.Label>
-		      			<Form.Control type="text" name="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="off"/>
+		      			<Form.Control type="text" name="email" value={user.email} onChange={handleChange} autoComplete="off"/>
 		      			<Form.Text className="text-danger">{formErrors.email}</Form.Text>
 					</Form.Group>		      			
 		      		<Form.Group>
 		      			<Form.Label>Password</Form.Label>
-		      			<Form.Control type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+		      			<Form.Control type="password" name="password" value={user.password} onChange={handleChange} />
 		      			<Form.Text className="text-danger">{formErrors.password}</Form.Text>
 		      		</Form.Group>
 		      		{props.errors !== undefined &&
@@ -94,11 +90,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		setAuthentication: (loginData) => {
+		setAuthentication: (user) => {
 			dispatch(async () => {
 				const res = await fetch(`${API_ROOT}/login`, { 
 		    	  	method: 'POST', 
-		      		body: JSON.stringify(loginData), 
+		      		body: JSON.stringify(user), 
 		      		headers: {
 		      		  	'Content-Type': 'application/json'
 		      		}

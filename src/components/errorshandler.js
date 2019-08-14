@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-
-class ErrorsHandler extends Component {  
-  render() {    
+function ErrorsHandler(props){    
     return (
-      <div>      
-     	  {this.props.errors !== undefined &&
-                this.props.errors.map(error => (
-                  <div className="text-danger">{`*${this.props.field} ${error}`}</div>
-                ))
-            
-      	}
-      </div>
-    );
-  }
+        <div>      
+     	    {props.errors !== undefined &&
+                props.errors.map((error, index) => (
+                    <div className="text-danger" key={index}>{`*${props.field} ${error}`}</div>
+                ))            
+      	    }
+        </div>
+    );  
 }
 
 export default ErrorsHandler;
