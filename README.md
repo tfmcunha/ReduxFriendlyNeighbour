@@ -1,3 +1,11 @@
+Welcome!
+
+This app is a clone of my Friendly Neighbour app refactored to use <b>Redux</b> and <b>React Hooks</b>
+
+Check it @ [coming soon]
+
+________________________________________________________________________________________________________________
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
