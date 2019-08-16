@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+//import store from '../redux/store';
 import Auth from '../modules/auth';
 import Footer from './footer';
 import Splash from './splash';
@@ -7,51 +8,32 @@ import Dashboard from './dashboard';
 import Help from './help';
 import NotFound from './404notfound';
 
-class Main extends Component {
-	constructor() {
-		super();
-		this.state = {
-			user: {},
-			auth: Auth.isUserAuthenticated(),
-			show: false
-		};
-		this.handleAuthentication=this.handleAuthentication.bind(this);		
-	}
+export default function Main(){ 
+	return (        
+		<div className="mb-5"> 	
+			<Switch>
+				<Route 
+					exact path="/" 
+					render={() => Auth.isUserAuthenticated()
+						? <Redirect to="/dashboard" />
+						: <Splash /> 
+				} />
 
-	handleAuthentication() {
-		this.setState({
-			auth: Auth.isUserAuthenticated()
-		})
-	}  
+				<Route 
+					path="/dashboard" 
+					render={() => <Dashboard /> } 
+				/>      
 
-	render() {
-		return (        
-			<div className="mb-5"> 	
-				<Switch>
-					<Route 
-						exact path="/" 
-						render={() => this.state.auth
-							? <Redirect to="/dashboard" />
-							: <Splash /> 
-					} />
+				<Route 
+					path="/help"
+					component={Help}
+				/>
 
-					<Route 
-						path="/dashboard" 
-						render={() => <Dashboard user={this.state.user} handleAuth={this.handleAuthentication} /> } 
-					/>      
-
-					<Route 
-						path="/help"
-						component={Help}
-					/>
-
-					<Route component={NotFound} />
-				</Switch>	
-				
-				<Footer />
-			</div>
-		);
-	}
+				<Route component={NotFound} />
+			</Switch>	
+			
+			<Footer />
+		</div>
+	);
+	
 }
-
-export default Main;

@@ -81,46 +81,44 @@ function Register(props) {
 	 }
 
 		
-		return (
-			<div className="p-4">
-				{Auth.isUserAuthenticated() &&
-					<Redirect to="/dashboard" />
-				}
-			<h3 className="text-center">Create a new account</h3>
-				<Form onSubmit={handleRegister}>		      		
-			  <Form.Group>
-				<Form.Label>E-mail</Form.Label>
-				<Form.Control type="email" name="email"value={newUser.email} onChange={handleChange} autoComplete="off"/>                
-				<Form.Text className="text-danger">{formErrors.email}</Form.Text>
-				<ErrorsHandler errors={apiErrors.email} field="Email" />
-			  </Form.Group> 
-			  <Form.Group>
-				<Form.Label>Password</Form.Label>
+	return (
+		<div className="p-4">
+			{Auth.isUserAuthenticated() &&
+				<Redirect to="/dashboard" />
+			}
+		<h3 className="text-center">Create a new account</h3>
+			<Form onSubmit={handleRegister}>		      		
+			  	<Form.Group>
+					<Form.Label>E-mail</Form.Label>
+					<Form.Control type="email" name="email"value={newUser.email} onChange={handleChange} autoComplete="off"/>                
+					<Form.Text className="text-danger">{formErrors.email}</Form.Text>
+					<ErrorsHandler errors={apiErrors.email} field="Email" />
+			  	</Form.Group> 
+			  	<Form.Group>
+					<Form.Label>Password</Form.Label>
 					<Form.Control type="password" name="password" value={newUser.password} onChange={handleChange}/>		      		
 					<Form.Text className="text-danger">{formErrors.password}</Form.Text>
-			  </Form.Group>     
-			  <Form.Group>
-				<Form.Label>First name</Form.Label>
-				<Form.Control type="text" name="first_name" value={newUser.first_name} onChange={handleChange} autoComplete="off"/>
+			 	</Form.Group>     
+			  	<Form.Group>
+					<Form.Label>First name</Form.Label>
+					<Form.Control type="text" name="first_name" value={newUser.first_name} onChange={handleChange} autoComplete="off"/>
 					<Form.Text className="text-danger">{formErrors.first_name}</Form.Text>
-			  </Form.Group> 
-			  <Form.Group>
-				<Form.Label>Last name</Form.Label>
-				<Form.Control type="text" name="last_name" value={newUser.last_name} onChange={handleChange} autoComplete="off"/>
-				<Form.Text className="text-danger">{formErrors.last_name}</Form.Text>
-			  </Form.Group> 
-			  <Form.Group> 
-				<Form.Label>Upload government ID</Form.Label>
-				<Form.Control type="file" name="govid" accept="application/pdf, image/png, image/jpeg" onChange={(e) => setNewUser({...newUser, govid: e.target.files[0]})}/>
-				<Form.Text className="text-danger">{formErrors.govid}</Form.Text>
-			  </Form.Group> 
+			  	</Form.Group> 
+			  	<Form.Group>
+					<Form.Label>Last name</Form.Label>
+					<Form.Control type="text" name="last_name" value={newUser.last_name} onChange={handleChange} autoComplete="off"/>
+					<Form.Text className="text-danger">{formErrors.last_name}</Form.Text>
+			  	</Form.Group> 
+			  	<Form.Group> 
+					<Form.Label>Upload government ID</Form.Label>
+					<Form.Control type="file" name="govid" accept="application/pdf, image/png, image/jpeg" onChange={(e) => setNewUser({...newUser, govid: e.target.files[0]})}/>
+					<Form.Text className="text-danger">{formErrors.govid}</Form.Text>
+		  		</Form.Group> 
 				<Button variant="primary" type="submit">Register</Button>
-				</Form>  
-
-			</div>
-					
-		);
-	}
+			</Form>  
+		</div>					
+	);
+}
 
 
 function mapStateToProps(state) {

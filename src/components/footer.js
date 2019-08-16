@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav } from 'react-bootstrap';
 import { FaQuestionCircle, FaEnvelope, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 import '../css/footer.css';
 
 
-class Footer extends Component {  
-  render() {    
+export default function Footer(){     
   	return (
   		<div>
 	  		<Navbar fixed="bottom" className="myfooter justify-content-center" >
@@ -38,8 +37,5 @@ class Footer extends Component {
 	  		</Navbar>      
 
   		</div>
-  		);
-  }
+  	);  
 }
-
-export default Footer;

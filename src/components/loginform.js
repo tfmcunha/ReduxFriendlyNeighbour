@@ -3,53 +3,17 @@ import { connect } from 'react-redux';
 import { API_ROOT } from '../constants';
 import { Redirect } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
+import useForm from '../hooks/useForm';
+
 
 import Auth from '../modules/auth';
 
 function LoginForm(props){
-
-	const [ user, setUser ] = useState({ email: "", password: ""})
-	const [ formErrors, setFormErrors ] = useState({});
-
-	function validateForm() {
-		let formIsValid = true
-		const errors = {email: "", password:""}
-
-		if (!user.email) {			
-			formIsValid = false;
-			errors['email'] = "*Please enter your email"
-		} 
-
-		if (typeof user.email !== "undefined") {      			
-			var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
-			if (!pattern.test(user.email)) {				
-				formIsValid = false;
-				errors['email'] = "*Please enter valid email."	
-			}
-		}
-
-		if (!user.password) {			
-			formIsValid = false;
-			errors['password'] = "*Please enter your password"
-		}
-
-		setFormErrors(errors)
-		return formIsValid;
+	const { handleChange, handleSubmit, user, formErrors } = useForm(submit)
+	
+	function submit(){
+		props.setAuthentication(user)		
 	}
-
-	function handleChange(e){
-		setUser({
-			...user,
-			[e.target.name]: e.target.value
-		})
-	}
-
-	function handleLogin(e) {
-		e.preventDefault()
-		if ( validateForm() ) {		    
-		    props.setAuthentication(user)		    
-		}	       
-	}	
 	
 	return (
   		<div className="p-4">
@@ -57,16 +21,16 @@ function LoginForm(props){
   				<Redirect to="/dashboard" />
   			}
       			<h3 className="text-center">LOGIN</h3>
-      			<Form onSubmit={handleLogin}>
+      			<Form onSubmit={handleSubmit}>
       				<Form.Group>
       					<Form.Label>E-mail</Form.Label>
-		      			<Form.Control type="text" name="email" value={user.email} onChange={handleChange} autoComplete="off"/>
-		      			<Form.Text className="text-danger">{formErrors.email}</Form.Text>
+		      			<Form.Control type="text" name="email" onChange={handleChange} autoComplete="off"/>
+		      			{formErrors.email && <Form.Text className="text-danger">{formErrors.email}</Form.Text>}
 					</Form.Group>		      			
 		      		<Form.Group>
 		      			<Form.Label>Password</Form.Label>
-		      			<Form.Control type="password" name="password" value={user.password} onChange={handleChange} />
-		      			<Form.Text className="text-danger">{formErrors.password}</Form.Text>
+		      			<Form.Control type="password" name="password" onChange={handleChange} />
+		      			{formErrors.password && <Form.Text className="text-danger">{formErrors.password}</Form.Text>}
 		      		</Form.Group>
 		      		{props.errors !== undefined &&
       					props.errors.map(error => (
