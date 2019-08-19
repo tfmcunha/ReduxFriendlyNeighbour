@@ -21,7 +21,7 @@ function LoginForm(props){
   				<Redirect to="/dashboard" />
   			}
       			<h3 className="text-center">LOGIN</h3>
-      			<Form onSubmit={handleSubmit}>
+      			<Form id="form" onSubmit={handleSubmit}>
       				<Form.Group>
       					<Form.Label>E-mail</Form.Label>
 		      			<Form.Control type="text" name="email" onChange={handleChange} autoComplete="off"/>
