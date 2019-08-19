@@ -4,7 +4,15 @@ import Auth from '../modules/auth';
 
 const initialState = {
 	authenticated: Auth.isUserAuthenticated(),
-	errors: [] 
+	errors: [],
+	currentLocation: {},
+	user: {},
+	requests: [],
+	currentRequest: {},	
+	newLocation: {
+		lat: "",
+		lng: ""
+	}
 }
 
 const reducer = (state = initialState, action) => {
@@ -14,6 +22,14 @@ const reducer = (state = initialState, action) => {
 			return {...state, authenticated: Auth.isUserAuthenticated() }
 		case "SET_AUTHENTICATION_ERRORS":			
 			return {...state, errors: action.payload }
+		case "SET_LOCATION":
+			return {...state, currentLocation: {lat: action.payload.latitude, lng: action.payload.longitude}}
+		case "SET_USER":
+			return {...state, user: {...action.payload}}
+		case "SET_REQUESTS":
+			return {...state, requests: [...action.payload]}
+		case "SET_CURRENT_REQUEST":
+			return {...state, currentRequest: {...action.payload}}
 		default:
 			return state
 	}

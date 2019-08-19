@@ -36,7 +36,6 @@ export default function useForm(callback) {
 	}
 
 	function handleSubmit(e) {
-		console.log(user)
 		e.preventDefault()				
 		if (validate(user)) {
 			callback()	       	

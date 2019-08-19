@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { API_ROOT } from '../constants';
 import { Switch, Route, Redirect } from 'react-router-dom';
@@ -14,117 +14,42 @@ import NewRequest from './newrequest';
 import NotFound from './404notfound';
 import '../css/dashboard.css';
 
-function Dashboard(){
+function Dashboard(props){
 	
-		/*this.state = {
-			currentLocation: {},
-			user: {},
-			requests: [],
-			currentRequest: {},	
-			newLocation: {},
-			show: false,
-			alert: false
-		}		*/
-		
+	const [showModal, setShowModal] = useState(false)
 	
-
 	useEffect(() => {
-		getLocation(); 
-		fetchProfile();	
+		props.getLocation(); 
+		props.fetchProfile();		
 	}, [])
 
-	function fetchProfile() {
-		fetch(`${API_ROOT}/profile`, { 
-			method: 'GET',
-			headers: {	        
-				token: Auth.getToken(),
-				'Authorization': `Token ${Auth.getToken()}`
-			}
-		})
-		.then(res => res.json())
-		.then(json => {
-			if (json.user !== undefined ) {
-				this.setState({
-					user: json.user
-				});
-			} else {
-				Auth.deauthenticateUser();
-				const { handleAuth } = this.props;  
-				handleAuth(); 
-			}
-		})	
-	}
+	useEffect(() => {		
+		props.fetchRequests(props.currentLocation);
+	}, [])
 
-	function fetchRequests() {	
-		const lat = this.state.currentLocation.lat;
-		const lng = this.state.currentLocation.lng;
-		fetch(`${API_ROOT}/requests`, { 
-			method: 'GET',
-			headers: {	        
-				token: Auth.getToken(),
-				'Authorization': `Token ${Auth.getToken()}`,
-				"lat":lat, 
-				"lng":lng				
-			}	
-		})
-		.then(res => res.json())
-		.then(json => {
-			
-				this.setState({
-					requests: json
-				});						
-			
-		})
-		.catch(error => console.log('An error occured ', error))			
-	}
-
+	
 	function onMapDrag(newCenter) {			
-		this.setState({
-			currentLocation: newCenter
-		}, () => this.fetchRequests()
-		)
-	}
-
-	function getLocation() {		
-		if (navigator && navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const coords = pos.coords;
-                this.setState({                	
-	                    currentLocation: {
-	                        lat: coords.latitude,
-	                        lng: coords.longitude
-	                    }	                
-                }, () => this.fetchRequests())
-            })
-        }
+		props.fetchRequests(newCenter)		
 	}
 //CALLED WHEN CLICKING A REQUEST FROM THE LIST OR FROM MARKER	
-	function handleRequest(request_id) {
-		let currentRequest = this.state.requests.find(request => request.id === request_id)	
-		this.setState({
-			currentRequest
-		})	
+	// 
 
-	}
+	// }
 //CALLED FROM PROFILE WHEN CHOOSING OWN REQUEST OR REQUEST WHERE USER IS VOLUNTEER
-	function handleOwnRequest(request) {
-		let currentRequest = request;		
-		this.setState({
-			currentRequest
-		})	
-	}
+	// function handleOwnRequest(request) {
+	// 	let currentRequest = request;		
+	// 	this.setState({
+	// 		currentRequest
+	// 	})	
+	// }
 
-	function handleNewRequest(lat, lng) {
-		const coords = {lat: lat, lng: lng}
-		this.setState({ 
-			show: true,
-			newLocation: coords
-		});
-	}
-
-	function handleClose() {
-		this.setState({show:false})
-	}
+	// function handleNewRequest(lat, lng) {
+	// 	const coords = {lat: lat, lng: lng}
+	// 	this.setState({ 
+	// 		show: true,
+	// 		newLocation: coords
+	// 	});
+	// }
 
 	return (
 		<Fragment>
@@ -132,7 +57,7 @@ function Dashboard(){
 				<Redirect to="/" />
 			}
 
-			<Menu user={this.state.user}/>     
+			<Menu user={props.user}/>     
 
 			<Switch>
 				<Route 
@@ -144,29 +69,23 @@ function Dashboard(){
 									<div className="map-container">
 										<RequestMap 
 											onMapDrag={onMapDrag} 
-											currentLocation={this.state.currentLocation} 
-											handleNewRequest={handleNewRequest} 
-											requests={this.state.requests}
-											handleRequest={handleRequest} 
+											currentLocation={props.currentLocation} 
+											//handleNewRequest={handleNewRequest} 
+											requests={props.requests}
+											//handleRequest={handleRequest} 
 										/>
 									</div>
 								</Col>
 								<Col md={3}>
 									<div className="my-2">
-										<RequestsList 
-											requests={this.state.requests} 
-											handleRequest={this.handleRequest} 
-										/>
+										<RequestsList />
 									</div>
 								</Col>
 							</Row>
 							<Row>
 								<Col>
 									<div className="m-2 p-2">
-										<RequestDetail 
-											user_id={this.state.user.id} 
-											request={this.state.currentRequest} 
-										/>    
+										<RequestDetail />    
 									</div>
 								</Col>
 							</Row>
@@ -178,8 +97,8 @@ function Dashboard(){
 					exact path={"/dashboard/request"}
 					render={() => 					
 						<Request 
-							user_id={this.state.user.id} 
-							request={this.state.currentRequest} 
+							user_id={props.user.id} 
+							request={props.currentRequest} 
 						/>      					      				
 					}
 				/>   
@@ -188,9 +107,9 @@ function Dashboard(){
 					exact path="/dashboard/profile"
 					render={() => 					
 						<Profile 
-							user={this.state.user} 
-							handleOwnRequest={this.handleOwnRequest} 
-							handleAuth={this.props.handleAuth}
+							user={props.user} 
+							//handleOwnRequest={this.handleOwnRequest} 
+							//handleAuth={this.props.handleAuth}
 						/>      					      				
 					}
 				/> 
@@ -199,8 +118,9 @@ function Dashboard(){
 
 			</Switch>
 
-			<Modal size="lg" show={this.state.show} onHide={this.handleClose}> 
-				<NewRequest user_id={this.state.user.id} newLocation={this.state.newLocation} close={this.handleClose} />
+			<Modal size="lg" show={showModal} onHide={() => setShowModal(false)}> 
+				<NewRequest user_id={props.user.id} close={() => setShowModal(false)} />
+				{/*newLocation={this.state.newLocation}*/}
 			</Modal>
 
 
@@ -208,4 +128,62 @@ function Dashboard(){
 	);	
 }
 
-export default connect()(Dashboard);
+function mapStateToProps(state) {
+	return {
+		currentLocation: state.currentLocation,
+		user: state.user,
+		requests: state.requests,
+		currentRequest: state.currentRequest,	
+		newLocation: state.newLocation
+	}
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		getLocation: () => {
+			if (navigator && navigator.geolocation) {
+	            navigator.geolocation.getCurrentPosition((pos) => {
+	                const coords = pos.coords;
+	                dispatch({type: "SET_LOCATION", payload: coords})
+	            })
+	        }
+		},
+
+		fetchProfile: () => {
+			dispatch( async ()=> {
+				const res = await fetch(`${API_ROOT}/profile`, { 
+					method: 'GET',
+					headers: {	        
+						token: Auth.getToken(),
+						'Authorization': `Token ${Auth.getToken()}`
+					}
+				})
+				const data = await res.json()
+				
+				if (data.user !== undefined ) {
+					dispatch({type: "SET_USER", payload:data.user})
+				}
+			})
+		},
+
+		fetchRequests: (coords) => {
+			dispatch( async ()=> {
+				const res = await fetch(`${API_ROOT}/requests`, { 
+					method: 'GET',
+					headers: {	        
+						token: Auth.getToken(),
+						'Authorization': `Token ${Auth.getToken()}`,
+						"lat":coords.lat,
+						"lng":coords.lng
+					}
+				})
+				const data = await res.json()
+
+				dispatch({type: "SET_REQUESTS", payload:data})
+				
+			}).catch(error => console.log('An error occured ', error))						
+		}		
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
