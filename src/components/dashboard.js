@@ -57,7 +57,7 @@ function Dashboard(props){
 				<Redirect to="/" />
 			}
 
-			<Menu user={props.user}/>     
+			<Menu username={props.user.first_name}/>     
 
 			<Switch>
 				<Route 
@@ -163,7 +163,7 @@ function mapDispatchToProps(dispatch) {
 				if (data.user !== undefined ) {
 					dispatch({type: "SET_USER", payload:data.user})
 				}
-			})
+			}).catch(error => console.log('An error occured ', error))	
 		},
 
 		fetchRequests: (coords) => {

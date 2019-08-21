@@ -1,47 +1,40 @@
-import React, {Component, Fragment} from 'react';
+import React, { Fragment, useState, useEffect} from 'react';
 import ActionCable from 'actioncable';
 import { API_ROOT, API_WS_ROOT } from '../constants';
 
-class Count extends Component {
-	constructor() {
-		super();
-		this.state = {count: ""};
-		this.handleReceived = this.handleReceived.bind(this);
-	}
+export default function Count() {
+	
+	const [ count, setCount ] = useState("") 
 
-	componentWillMount() {
-		fetch(`${API_ROOT}/count`)
-		.then(res => res.json())
-		.then(json => {
-			this.setState({
-				count: json
-			});			
-		})
-		this.createSocket();
-	}
-
-	createSocket(id) {
+	useEffect(() => {
+		async function fetchCount() {
+			const res = await fetch(`${API_ROOT}/count`)
+			const data = await res.json()
+			setCount(data)	
+		}
+		fetchCount()		
+		
 		const cable = ActionCable.createConsumer(`${API_WS_ROOT}`);
 		
-		this.sub = cable.subscriptions.create(
+		let sub = cable.subscriptions.create(
       		{ channel: 'RequestCountChannel' },
-		    { received: (response) => { this.handleReceived(response) } }
+		    { received: (response) => { handleReceived(response) } }
     	);
-	}
+		return () => {
+			cable.subscriptions.remove(sub)
+		}
+	}, [])
 
-	handleReceived(response) {
-		this.setState({count: response})
+	function handleReceived(response) {
+		setCount(response)
 	}
-
-	render() {
-		return(
-			<Fragment>				
-       			<div className="text-center m-2">
-       				<h3>Unfulfilled help requests</h3>
-       				<h1>{this.state.count}</h1>
-       			</div>
-			</Fragment>
-			);
-	}
+	
+	return(
+		<Fragment>				
+   			<div className="text-center m-2">
+   				<h3>Unfulfilled help requests</h3>
+   				<h1>{count}</h1>
+   			</div>
+		</Fragment>
+	);	
 }
-export default Count;

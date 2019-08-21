@@ -1,44 +1,48 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { API_ROOT } from '../constants';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import Auth from '../modules/auth';
 import '../css/menu.css';
 
-class Menu extends Component {
+export default function Menu({username}) {
+
+	const [ redirect, setRedirect ] = useState(false)
 	
-	handleLogout = (e) => {
-		fetch(`${API_ROOT}/logout`, {
+	async function handleLogout() {
+		const res = await fetch(`${API_ROOT}/logout`, {
 			method: 'delete',
 			headers: {
 				'Authorization': `Token ${Auth.getToken()}`
 			}
 		})
-		.then(res => res.json())
-		.then(json => console.log(json));
-		Auth.deauthenticateUser();
+		
+		if (res.status == 200) {
+			console.log(res)
+			Auth.deauthenticateUser();
+			setRedirect(true)	
+		} else {
+			console.log(res.status)
+		}
 	}
 
-	render() {
-    	return (    		
-     		<Fragment>
+	return (    		
+ 		<Fragment>
+ 			{redirect && <Redirect to="/" />}
+     		<Navbar bg="light" expand="sm" className="menu" >
+	     		<Navbar.Brand className="brand p-2" href="/">Friendly Neighbour</Navbar.Brand>		     		
+	     		<Navbar.Toggle aria-controls="basic-navbar-nav" />
+	     		<Navbar.Collapse id="basic-navbar-nav">
+		     		<Nav className="ml-auto">				     		
+			     		<NavDropdown title={`Hello, ${username}`} id="basic-nav-dropdown">
+				     		<NavDropdown.Item href="/dashboard/profile">Profile</NavDropdown.Item>
+				     		<NavDropdown.Divider />
+				     		<NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+			     		</NavDropdown>
+		     		</Nav>
+	     		</Navbar.Collapse>
+     		</Navbar>
 
-	     		<Navbar bg="light" expand="sm" className="menu" >
-		     		<Navbar.Brand className="brand p-2" href="/">Friendly Neighbour</Navbar.Brand>		     		
-		     		<Navbar.Toggle aria-controls="basic-navbar-nav" />
-		     		<Navbar.Collapse id="basic-navbar-nav">
-			     		<Nav className="ml-auto">				     		
-				     		<NavDropdown title={`Hello, ${this.props.user.first_name}`} id="basic-nav-dropdown">
-					     		<NavDropdown.Item href="/dashboard/profile">Profile</NavDropdown.Item>
-					     		<NavDropdown.Divider />
-					     		<NavDropdown.Item href="/" onClick={this.handleLogout}>Logout</NavDropdown.Item>
-				     		</NavDropdown>
-			     		</Nav>
-		     		</Navbar.Collapse>
-	     		</Navbar>
-
-      		</Fragment>
-    	);
-  	}
+  		</Fragment>
+	);  	
 }
-
-export default Menu;
