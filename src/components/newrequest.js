@@ -15,6 +15,7 @@ class NewRequest extends Component {
 	}
 
 	componentDidMount(){
+		console.log(this.props)
 		this.setState({
 			request: {
 				lat: this.props.newLocation.lat,

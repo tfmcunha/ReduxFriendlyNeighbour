@@ -33,8 +33,8 @@ function LoginForm(props){
 		      			{formErrors.password && <Form.Text className="text-danger">{formErrors.password}</Form.Text>}
 		      		</Form.Group>
 		      		{props.errors !== undefined &&
-      					props.errors.map(error => (
-      						<Form.Group>
+      					props.errors.map((error, index) => (
+      						<Form.Group key={index}>
       							<Form.Text className="text-danger">*{error.detail}</Form.Text>
       						</Form.Group>
       				))

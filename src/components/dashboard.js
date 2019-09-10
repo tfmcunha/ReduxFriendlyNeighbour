@@ -17,7 +17,8 @@ import '../css/dashboard.css';
 function Dashboard(props){
 	
 	const [showModal, setShowModal] = useState(false)
-	
+	const [newLocation, setNewLocation] = useState({})
+
 	useEffect(() => {
 		props.getLocation(); 
 		props.fetchProfile();		
@@ -43,13 +44,11 @@ function Dashboard(props){
 	// 	})	
 	// }
 
-	// function handleNewRequest(lat, lng) {
-	// 	const coords = {lat: lat, lng: lng}
-	// 	this.setState({ 
-	// 		show: true,
-	// 		newLocation: coords
-	// 	});
-	// }
+	function handleNewRequest(lat, lng) {
+		const coords = {lat: lat, lng: lng}
+		setNewLocation(coords)
+		setShowModal(true)			
+	}
 
 	return (
 		<Fragment>
@@ -70,7 +69,7 @@ function Dashboard(props){
 										<RequestMap 
 											onMapDrag={onMapDrag} 
 											currentLocation={props.currentLocation} 
-											//handleNewRequest={handleNewRequest} 
+											handleNewRequest={handleNewRequest} 
 											requests={props.requests}
 											//handleRequest={handleRequest} 
 										/>
@@ -119,8 +118,7 @@ function Dashboard(props){
 			</Switch>
 
 			<Modal size="lg" show={showModal} onHide={() => setShowModal(false)}> 
-				<NewRequest user_id={props.user.id} close={() => setShowModal(false)} />
-				{/*newLocation={this.state.newLocation}*/}
+				<NewRequest user_id={props.user.id} newLocation={newLocation} close={() => setShowModal(false)} />				
 			</Modal>
 
 

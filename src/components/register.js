@@ -10,16 +10,14 @@ import useForm from '../hooks/useForm';
 
 function Register(props) {
 
-	const { handleChange, handleSubmit, user, formErrors } = useForm("Register", submit)
+	const { handleChange, handleSubmit, user, formErrors } = useForm(submit)
 	const [ apiErrors, setApiErrors ] = useState({});
-  	//const [ file, setFile ] = useState({})	
   
 	function submit(){
 		const newUser = new FormData(); 
 		for (var i in user) {
 			newUser.append(`user[${i}]`, user[`${i}`])
 		}
-		//newUser.append('user[govid]', file)
 		props.setAuthentication(newUser,setApiErrors)
 	}
 		

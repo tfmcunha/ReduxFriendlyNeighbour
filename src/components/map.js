@@ -1,19 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
-class RequestMap extends Component {
-	constructor() {
-		super();		      	
-    	this.onMapClick = this.onMapClick.bind(this); 
-    	this.mapDragged = this.mapDragged.bind(this);    	
-	}
+function RequestMap({google, handleRequest, handleNewRequest, onMapDrag, currentLocation, requests}){
 
-	onMapClick(props, map, e) {		
-		const { handleNewRequest } = this.props;
+	function onMapClick(unused1,unused2,e) {		
 		handleNewRequest(e.latLng.lat(), e.latLng.lng());
 	}
 
-	setMarkerColor(type){	
+	function setMarkerColor(type){	
 		let icon = "";	
   		if (type === "Materials" ) {
   			icon = "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
@@ -23,45 +17,42 @@ class RequestMap extends Component {
   		return icon
 	}
 
-	mapDragged(props, map) {
+	function mapDragged(unused, map) {
 		let newCenter = {lat:"", lng:""};
 		newCenter["lat"] = map.getCenter().lat();
 		newCenter["lng"] = map.getCenter().lng();
-		const { onMapDrag } = this.props;
 		onMapDrag(newCenter)
 	}
 
 
-
-	render() {  
 		return (
 			<Fragment>
 
 				<Map 
-					google= {this.props.google}           
-					initialCenter={this.props.currentLocation}
-					center={this.props.currentLocation}
+					google= {google}           
+					initialCenter={currentLocation}
+					center={currentLocation}
 					zoom={15}
 					zoomControl={false}
 					scrollwheel={false}
-					onClick={this.onMapClick}
-					onDragend={this.mapDragged}
+					onClick={onMapClick}
+					onDragend={mapDragged}
 				>
 
-		          	{this.props.requests.map(request => (
+		          	{requests.map(request => (
 		              	<Marker
 		                    key={request.id}
 		                    name={request.title}
 		                    position={{lat: request.lat, lng: request.lng}}
-		                    icon={this.setMarkerColor(request.req_type)}
-		                    onClick={(e) => this.props.handleRequest(request.id)} 
+		                    icon={setMarkerColor(request.req_type)}
+		                    onClick={(e) => handleRequest(request.id)} 
 		               	/>		          	
 		          		))
 		          	}     
 		        </Map> 
 		    </Fragment>		    
         );
-	}
+	
 }
 
 export default GoogleApiWrapper({
