@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { API_ROOT } from '../constants';
 import { Redirect } from 'react-router-dom';
@@ -24,7 +24,7 @@ function LoginForm(props){
       			<Form id="form" onSubmit={handleSubmit}>
       				<Form.Group>
       					<Form.Label>E-mail</Form.Label>
-		      			<Form.Control type="text" name="email" onChange={handleChange} autoComplete="off"/>
+		      			<Form.Control type="text" name="email" onChange={handleChange} autoComplete="off" />
 		      			{formErrors.email && <Form.Text className="text-danger">{formErrors.email}</Form.Text>}
 					</Form.Group>		      			
 		      		<Form.Group>

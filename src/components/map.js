@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 function RequestMap({google, handleRequest, handleNewRequest, onMapDrag, currentLocation, requests}){

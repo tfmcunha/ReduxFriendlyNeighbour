@@ -17,7 +17,7 @@ export default function Menu({username}) {
 			}
 		})
 		
-		if (res.status == 200) {
+		if (res.status === 200) {
 			console.log(res)
 			Auth.deauthenticateUser();
 			setRedirect(true)	
