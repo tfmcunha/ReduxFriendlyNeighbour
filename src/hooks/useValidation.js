@@ -14,11 +14,16 @@ export default function useValidation() {
 				errors[`${i}`] = "*This field can't be empty!"
 			}
 		}
-		     			
+		
 		var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
 		if (!pattern.test(user.email)) {				
 			isValid = false;
 			errors['email'] = "*Please enter valid email."	
+		}
+
+		if ( user.new_password ) {
+			isValid = false;
+			errors['new_password'] = "*Password must have at least 3 characters."		
 		}		
 		
 		if ( user.govid ) {

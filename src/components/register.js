@@ -36,8 +36,8 @@ function Register(props) {
 			  	</Form.Group> 
 			  	<Form.Group>
 					<Form.Label>Password</Form.Label>
-					<Form.Control type="password" name="password" onChange={handleChange}/>		      		
-					<Form.Text className="text-danger">{formErrors.password}</Form.Text>
+					<Form.Control type="password" name="new_password" onChange={handleChange}/>		      		
+					<Form.Text className="text-danger">{formErrors.new_password}</Form.Text>
 			 	</Form.Group>     
 			  	<Form.Group>
 					<Form.Label>First name</Form.Label>
