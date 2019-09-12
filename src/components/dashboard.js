@@ -118,7 +118,7 @@ function Dashboard(props){
 			</Switch>
 
 			<Modal size="lg" show={showModal} onHide={() => setShowModal(false)}> 
-				<NewRequest user_id={props.user.id} newLocation={newLocation} close={() => setShowModal(false)} />				
+				<NewRequest newLocation={newLocation} close={() => setShowModal(false)} />				
 			</Modal>
 
 

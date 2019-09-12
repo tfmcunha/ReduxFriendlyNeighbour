@@ -1,76 +1,65 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
+import { connect } from 'react-redux';
 import { API_ROOT } from '../constants';
 import Auth from '../modules/auth';
 import { Form, Button } from 'react-bootstrap';
 
-class NewRequest extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			request: {},
-			errors: {}
-		};
-		this.handleNewRequest=this.handleNewRequest.bind(this);
-		this.handleChange=this.handleChange.bind(this);
-	}
+function NewRequest(props){
 
-	componentDidMount(){
-		console.log(this.props)
-		this.setState({
-			request: {
-				lat: this.props.newLocation.lat,
-				lng: this.props.newLocation.lng
-			}
+	const [ newRequest, setNewRequest ] = useState({})
+	const [ errors, setErrors ] = useState({})
+
+	useEffect(() => {
+		setNewRequest({
+			...newRequest, 
+			user_id: props.user_id, 
+			lat: props.newLocation.lat, 
+			lng: props.newLocation.lng
+		})
+	}, [])		
+
+	function handleChange(e) {				
+		setNewRequest({
+			...newRequest,
+			[e.target.name]: e.target.value
 		})
 	}
 
-	handleChange(e) {
-		const request = this.state.request;
-		request["user_id"] = this.props.user_id;
-		request[e.target.name] = e.target.value;
-		this.setState({
-			request
-		})
-	}
-
-	validateForm() {
-	    const request = this.state.request;
-	    let errors ={};
+	function validateForm() {	    
+	    let errors = {};
 	    let formIsValid = true;
 
-	    if (!request["title"]) {
+	    if (!newRequest["title"]) {
 	      formIsValid = false;
 	      errors["title"] = "*Enter a title!";
 	    }
 
-	    if (!request["body"]) {
+	    if (!newRequest["body"]) {
 	      formIsValid = false;
 	      errors["body"] = "*Enter a description (300 characters max)!";
-	    }
+	    } else {
+	    	if(newRequest["body"].length > 300) {
+		    	formIsValid = false;
+		      	errors["body"] = "*Description can't have more than 300 characters!";	
+		    }
+	    }	    
 
-	    if(request["body"].length > 300) {
-	    	formIsValid = false;
-	      	errors["body"] = "*Description can't have more than 300 characters!";	
-	    }
-
-	    if (!request["req_type"]) {
+	    if (!newRequest["req_type"]) {
 	      formIsValid = false;
 	      errors["req_type"] = "*Choose a help type!";
 	    } 	    
 
-	    this.setState({
-	      errors
-	    })
+	    setErrors(errors)	      
 
 	    return formIsValid;
 
-	  }
+	}
 
-	handleNewRequest(e) {
+	async function handleNewRequest(e) {
 		e.preventDefault();
-		if(this.validateForm()) {
-			const request = JSON.stringify(this.state.request);
-			fetch(`${API_ROOT}/requests`, { 
+		if(validateForm()) {
+			const request = JSON.stringify(newRequest);
+			const res = await fetch(`${API_ROOT}/requests`, { 
 	        	method: 'POST', 
 	        	body: request, 
 	        	headers: {	        
@@ -79,43 +68,46 @@ class NewRequest extends Component {
 		        	'Content-Type': 'application/json'
 		      	}        	
 	      	})
-	      	.then(res => res.json())
-	      	.then(json => {console.log(json)})
-	      	this.props.close();	      	
-	    } else {
-	    	console.log("Form content not valid!")
+	      	const data = await res.json()	
+	      	if (data.status === "ok") {
+	      		props.close();	      	
+	      	} else {
+	      		console.log(data)
+	      	}	      	
 	    }
-
 	}
+			
+	return(
+		<div className="p-4">
+			<div className="text-center">Add new help request</div>
+			<Form onSubmit={handleNewRequest}>
+				<Form.Group>
+					<Form.Label>Title</Form.Label>
+					<Form.Control type="text" name="title"  onChange={handleChange} autoComplete="off"/>
+					<Form.Text className="text-danger">{errors.title}</Form.Text>
+				</Form.Group>
+				<Form.Group>
+					<Form.Label>Description</Form.Label>
+					<Form.Control as="textarea" rows="3" name="body" onChange={handleChange} autoComplete="off"/>
+					<Form.Text className="text-danger">{errors.body}</Form.Text>
+				</Form.Group>
+				<Form.Group>
+					<Form.Label>Request Type:</Form.Label>
+					<Form.Check type="radio" label="Task" name="req_type" value="Task" onChange={handleChange} />
+					<Form.Check type="radio" label="Materials" name="req_type" value="Materials" onChange={handleChange} />
+					<Form.Text className="text-danger">{errors.req_type}</Form.Text>
+				</Form.Group>					
+				<Button variant="primary" type="submit">Send</Button>
+				<Button variant="secondary" onClick={props.close}>Close</Button>
+			</Form>
+		</div>
+	);	
+}
 
-	render() {		
-		return(
-			<div className="p-4">
-				<div className="text-center">Add new help request</div>
-				<Form onSubmit={this.handleNewRequest}>
-					<Form.Group>
-						<Form.Label>Title</Form.Label>
-						<Form.Control type="text" name="title"  onChange={this.handleChange} autoComplete="off"/>
-						<Form.Text className="text-danger">{this.state.errors.title}</Form.Text>
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Description</Form.Label>
-						<Form.Control as="textarea" rows="3" name="body" onChange={this.handleChange} autoComplete="off"/>
-						<Form.Text className="text-danger">{this.state.errors.body}</Form.Text>
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Request Type:</Form.Label>
-						<Form.Check type="radio" label="Task" name="req_type" value="Task" onChange={this.handleChange} />
-						<Form.Check type="radio" label="Materials" name="req_type" value="Materials" onChange={this.handleChange} />
-						<Form.Text className="text-danger">{this.state.errors.req_type}</Form.Text>
-					</Form.Group>					
-					<Button variant="primary" type="submit">Send</Button>
-					<Button variant="secondary" onClick={this.props.close}>Close</Button>
-				</Form>
-
-			</div>
-		);
+function mapStateToProps(state){
+	return {
+		user_id: state.user.id
 	}
 }
 
-export default NewRequest;
+export default connect(mapStateToProps)(NewRequest);
