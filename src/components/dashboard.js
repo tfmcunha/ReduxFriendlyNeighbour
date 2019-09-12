@@ -67,11 +67,8 @@ function Dashboard(props){
 								<Col md={9}>
 									<div className="map-container">
 										<RequestMap 
-											onMapDrag={onMapDrag} 
-											currentLocation={props.currentLocation} 
-											handleNewRequest={handleNewRequest} 
-											requests={props.requests}
-											//handleRequest={handleRequest} 
+											onMapDrag={onMapDrag} 											
+											handleNewRequest={handleNewRequest} 											
 										/>
 									</div>
 								</Col>
