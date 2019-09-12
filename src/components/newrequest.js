@@ -13,8 +13,8 @@ function NewRequest(props){
 		setNewRequest({
 			...newRequest, 
 			user_id: props.user_id, 
-			lat: props.newLocation.lat, 
-			lng: props.newLocation.lng
+			lat: props.newRequestLocation.lat, 
+			lng: props.newRequestLocation.lng
 		})
 	}, [])		
 
@@ -29,24 +29,24 @@ function NewRequest(props){
 	    let errors = {};
 	    let formIsValid = true;
 
-	    if (!newRequest["title"]) {
+	    if (!newRequest.title) {
 	      formIsValid = false;
-	      errors["title"] = "*Enter a title!";
+	      errors.title = "*Enter a title!";
 	    }
 
-	    if (!newRequest["body"]) {
+	    if (!newRequest.body) {
 	      formIsValid = false;
-	      errors["body"] = "*Enter a description (300 characters max)!";
+	      errors.body = "*Enter a description (300 characters max)!";
 	    } else {
-	    	if(newRequest["body"].length > 300) {
+	    	if(newRequest.body.length > 300) {
 		    	formIsValid = false;
-		      	errors["body"] = "*Description can't have more than 300 characters!";	
+		      	errors.body = "*Description can't have more than 300 characters!";	
 		    }
 	    }	    
 
-	    if (!newRequest["req_type"]) {
+	    if (!newRequest.req_type) {
 	      formIsValid = false;
-	      errors["req_type"] = "*Choose a help type!";
+	      errors.req_type = "*Choose a help type!";
 	    } 	    
 
 	    setErrors(errors)	      

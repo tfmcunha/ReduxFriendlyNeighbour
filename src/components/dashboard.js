@@ -17,7 +17,7 @@ import '../css/dashboard.css';
 function Dashboard(props){
 	
 	const [showModal, setShowModal] = useState(false)
-	const [newLocation, setNewLocation] = useState({})
+	const [newRequestLocation, setNewRequestLocation] = useState({})
 
 	useEffect(() => {
 		props.getLocation(); 
@@ -46,7 +46,7 @@ function Dashboard(props){
 
 	function handleNewRequest(lat, lng) {
 		const coords = {lat: lat, lng: lng}
-		setNewLocation(coords)
+		setNewRequestLocation(coords)
 		setShowModal(true)			
 	}
 
@@ -118,7 +118,7 @@ function Dashboard(props){
 			</Switch>
 
 			<Modal size="lg" show={showModal} onHide={() => setShowModal(false)}> 
-				<NewRequest newLocation={newLocation} close={() => setShowModal(false)} />				
+				<NewRequest newRequestLocation={newRequestLocation} close={() => setShowModal(false)} />				
 			</Modal>
 
 
