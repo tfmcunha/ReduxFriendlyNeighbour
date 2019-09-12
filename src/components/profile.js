@@ -19,14 +19,14 @@ function Profile(props) {
 	}, [])	
 
 	async function fetchOwnedRequests(){
-		const res = fetch(`${API_ROOT}/owner`, { 
+		const res = await fetch(`${API_ROOT}/owner`, { 
 			method: 'GET',
 			headers: {	        
 				token: Auth.getToken(),
 				'Authorization': `Token ${Auth.getToken()}`			
 			}	
 		})
-		const data = res.json()
+		const data = await res.json()
 		
 		setOwnedRequests(data.requests)
 		setIsVolunteer(data.isVolunteer)				
@@ -39,8 +39,8 @@ function Profile(props) {
 		})			
 	}	
 
-	async function handleRegister(e) {
-		const res = fetch(`${API_ROOT}/users/${props.user.id}`,{
+	async function handleEdit(e) {
+		const res = await fetch(`${API_ROOT}/users/${props.user.id}`,{
 			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json', 	       
@@ -49,7 +49,7 @@ function Profile(props) {
 			},
 			body: JSON.stringify(user)
 		})
-		const data = res.json()		
+		const data = await res.json()		
 	}
 
 	
@@ -64,7 +64,7 @@ function Profile(props) {
 				<Col md={4}>
 					<div className="mt-2 border-top border-warning pb-3">
 						<h3 className="text-center">Edit your details</h3>
-						<Form onSubmit={handleRegister}>		      		
+						<Form onSubmit={handleEdit}>		      		
 							<Form.Group>
 								<Form.Label>E-mail</Form.Label>
 								<Form.Control type="email" defaultValue={props.user.email} disabled/>				
