@@ -1,14 +1,13 @@
 import React, { Fragment, useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { API_ROOT } from '../constants';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import Auth from '../modules/auth';
 import '../css/menu.css';
 
-export default function Menu({username}) {
+function Menu({username, deAuthenticate}) {
 
-	const [ redirect, setRedirect ] = useState(false)
-	
 	async function handleLogout() {
 		const res = await fetch(`${API_ROOT}/logout`, {
 			method: 'delete',
@@ -18,9 +17,7 @@ export default function Menu({username}) {
 		})
 		
 		if (res.status === 200) {
-			console.log(res)
-			Auth.deauthenticateUser();
-			setRedirect(true)	
+			deAuthenticate();
 		} else {
 			console.log(res.status)
 		}
@@ -28,7 +25,6 @@ export default function Menu({username}) {
 
 	return (    		
  		<Fragment>
- 			{redirect && <Redirect to="/" />}
      		<Navbar bg="light" expand="sm" className="menu" >
 	     		<Navbar.Brand className="brand p-2" href="/">Friendly Neighbour</Navbar.Brand>		     		
 	     		<Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -46,3 +42,11 @@ export default function Menu({username}) {
   		</Fragment>
 	);  	
 }
+
+function mapDispatchToProps(dispatch){
+	return {
+		deAuthenticate: () => dispatch({type: "DEAUTHENTICATE"})
+	}
+}
+
+export default connect(null,mapDispatchToProps)(Menu)

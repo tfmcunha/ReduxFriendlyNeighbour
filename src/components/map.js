@@ -61,8 +61,8 @@ function RequestMap(props){
 
 function mapStateToProps(state){
 	return {
-		requests: state.requests,		
-		currentLocation: state.currentLocation
+		requests: state.main.requests,		
+		currentLocation: state.main.currentLocation
 	}
 }
 

@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import Auth from '../modules/auth';
 import { Modal, Button } from 'react-bootstrap';
 import { API_ROOT } from '../constants';
 
 
-function CancelAcc(props) {
+function CancelAcc({userId, deAuthenticate}) {
 	
   const [ show, setShow ] = useState(false)  
 
 	async function handleCancelation(e) {
     e.preventDefault();
-    const res = await fetch(`${API_ROOT}/users/${props.user_id}`, { 
+    const res = await fetch(`${API_ROOT}/users/${userId}`, { 
         method: 'DELETE',
         headers: {          
           token: Auth.getToken(),
           'Authorization': `Token ${Auth.getToken()}`
         }
       })
-    const data = res.json()
-    if (data.status === "ok") {
-      Auth.deauthenticateUser();        
-      const { handleAuth } = props;  
-      handleAuth();      
+    const data = await res.json()
+    if (data.status === "ok") {      
+      deAuthenticate()    
     }    
   }	
 
@@ -41,4 +40,10 @@ function CancelAcc(props) {
   );
 }
 
-export default CancelAcc;
+function mapDispatchToProps(dispatch) {
+  return {
+    deAuthenticate: () => dispatch({type: "DEAUTHENTICATE"})
+  }
+}
+
+export default connect(null, mapDispatchToProps)(CancelAcc);

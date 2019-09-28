@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-//import store from '../redux/store';
+import { connect } from 'react-redux';
 import Auth from '../modules/auth';
 import Footer from './footer';
 import Splash from './splash';
@@ -8,22 +8,23 @@ import Dashboard from './dashboard';
 import Help from './help';
 import NotFound from './404notfound';
 
-export default function Main(){ 
+function Main({authenticated}){ 
 	return (        
 		<div className="mb-5"> 	
-			<Switch>
+			<Switch>				
 				<Route 
 					exact path="/" 
-					render={() => Auth.isUserAuthenticated()
+					render={() => authenticated
 						? <Redirect to="/dashboard" />
 						: <Splash /> 
 				} />
 
 				<Route 
 					path="/dashboard" 
-					render={() => <Dashboard /> } 
-				/>      
-
+					render={() => authenticated 
+						? <Dashboard /> 
+						: <Splash />
+				} />    
 				<Route 
 					path="/help"
 					component={Help}
@@ -34,6 +35,13 @@ export default function Main(){
 			
 			<Footer />
 		</div>
-	);
-	
+	);	
 }
+
+function mapStateToProps(state){
+	return {
+		authenticated: state.auth.authenticated
+	}
+}
+
+export default connect(mapStateToProps)(Main)

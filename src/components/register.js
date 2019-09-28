@@ -63,7 +63,7 @@ function Register(props) {
 
 function mapStateToProps(state) {
   	return {
-  		errors: state.errors
+  		errors: state.auth.errors
   	}
 }
 

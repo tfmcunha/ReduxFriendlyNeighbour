@@ -34,7 +34,7 @@ function RequestDetails(props){
 
 function mapStateToProps(state) {
 	return {
-		request: state.currentRequest
+		request: state.main.currentRequest
 	}
 }
 

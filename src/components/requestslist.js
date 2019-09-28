@@ -27,7 +27,7 @@ function RequestsList(props) {
 
 function mapStateToProps(state){
 	return {
-		requests: state.requests,		
+		requests: state.main.requests,		
 	}
 }
 

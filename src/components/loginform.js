@@ -47,8 +47,8 @@ function LoginForm(props){
 
 function mapStateToProps(state) {
 	return{
-		auth: state.authenticated,
-		errors: state.errors
+		auth: state.auth.authenticated,
+		errors: state.auth.errors
 	}		
 }
 

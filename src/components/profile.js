@@ -85,7 +85,7 @@ function Profile(props) {
 							<Button variant="primary" type="submit">Save</Button>
 						</Form>							
 					</div>
-					<CancelAcc handleAuth={props.handleAuth}/>
+					<CancelAcc userId={props.user.user_id}/>
 				</Col>
 
 				<Col md={4}>

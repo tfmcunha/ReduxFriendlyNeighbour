@@ -52,9 +52,6 @@ function Dashboard(props){
 
 	return (
 		<Fragment>
-			{!(Auth.isUserAuthenticated()) &&
-				<Redirect to="/" />
-			}
 
 			<Menu username={props.user.first_name}/>     
 
@@ -125,11 +122,11 @@ function Dashboard(props){
 
 function mapStateToProps(state) {
 	return {
-		currentLocation: state.currentLocation,
-		user: state.user,
-		requests: state.requests,
-		currentRequest: state.currentRequest,	
-		newLocation: state.newLocation
+		currentLocation: state.main.currentLocation,
+		user: state.main.user,
+		requests: state.main.requests,
+		currentRequest: state.main.currentRequest,	
+		newLocation: state.main.newLocation
 	}
 }
 
@@ -154,7 +151,7 @@ function mapDispatchToProps(dispatch) {
 					}
 				})
 				const data = await res.json()
-				
+				console.log(data)
 				if (data.user !== undefined ) {
 					dispatch({type: "SET_USER", payload:data.user})
 				}
